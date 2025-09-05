@@ -13,5 +13,7 @@ public interface ProductMapper {
     ProductDTO toDTO(Product product);
     Product toEntity(ProductDTO dto);
 
-
+    // Update partiel: ignore les champs null du DTO
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(ProductDTO dto, @MappingTarget Product entity);
 }

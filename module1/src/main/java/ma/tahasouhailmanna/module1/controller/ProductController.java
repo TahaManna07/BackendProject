@@ -6,6 +6,10 @@ import ma.tahasouhailmanna.module1.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 @RestController
@@ -39,5 +43,30 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public Page<ProductDTO> search(@Valid ma.tahasouhailmanna.module1.criteria.ProductCriteria criteria, Pageable pageable) {
+        return productService.search(criteria, pageable);
+    }
+
+    @GetMapping("/search/name")
+    public List<ProductDTO> searchByName(@RequestParam String name) {
+        return productService.findByName(name);
+    }
+
+    @GetMapping("/search/description")
+    public List<ProductDTO> searchByDescription(@RequestParam String description) {
+        return productService.findByDescription(description);
+    }
+
+    @GetMapping("/search/category")
+    public List<ProductDTO> searchByCategory(@RequestParam String category) {
+        return productService.findByCategory(category);
+    }
+
+    @GetMapping("/search/price")
+    public List<ProductDTO> searchByPriceBetween(@RequestParam Double min, @RequestParam Double max) {
+        return productService.findByPriceBetween(min, max);
     }
 }
