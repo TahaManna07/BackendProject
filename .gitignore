@@ -37,9 +37,14 @@ build/
 ### Mac OS ###
 .DS_Store
 
-# Environment files (do not commit secrets)
-.env
-.env.*
+# Environment files across the whole repo (never commit secrets)
+**/.env
+**/.env.*
+# allow documented examples
+!**/.env.example
+!**/.env.template
+!**/.env.properties.example
 .env.properties
-!.env.example
-!.env.template
+# Also ignore non-dot env properties if used
+**/env.properties
+!**/env.properties.example
