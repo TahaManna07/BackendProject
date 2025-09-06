@@ -48,3 +48,14 @@ build/
 # Also ignore non-dot env properties if used
 **/env.properties
 !**/env.properties.example
+
+# Python virtual environments
+venv/
+**/venv/
+.env/
+**/.env/
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.pyc
