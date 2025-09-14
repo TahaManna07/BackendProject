@@ -23,4 +23,8 @@ public class Product {
     private String imageUrl;
     private Integer quantity;
     private String category;
+
+    private String sku;
+    private Boolean available;
+    private Double discount;
 }

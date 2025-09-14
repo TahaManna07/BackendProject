@@ -3,6 +3,7 @@ package ma.tahasouhailmanna.module1.criteria;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 @Data
@@ -11,10 +12,10 @@ public class ProductCriteria {
     private String description;
     private String category;
 
-    @DecimalMin(value = "0.0", inclusive = true, message = "minPrice must be >= 0")
+    @PositiveOrZero
     private Double minPrice;
 
-    @DecimalMin(value = "0.0", inclusive = true, message = "maxPrice must be >= 0")
+    @PositiveOrZero
     private Double maxPrice;
 
     @Min(value = 0, message = "minQuantity must be >= 0")
@@ -32,4 +33,15 @@ public class ProductCriteria {
     public boolean isQuantityRangeValid() {
         return minQuantity == null || maxQuantity == null || minQuantity <= maxQuantity;
     }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+    public Double getMinPrice() { return minPrice; }
+    public void setMinPrice(Double minPrice) { this.minPrice = minPrice; }
+    public Double getMaxPrice() { return maxPrice; }
+    public void setMaxPrice(Double maxPrice) { this.maxPrice = maxPrice; }
 }
