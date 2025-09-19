@@ -11,6 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,29 +31,39 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "products")
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(productMapper::toDTO)
+                .map(productMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "product", key = "#id")
     public Optional<ProductDTO> getProductById(Long id) {
         return productRepository.findById(id)
-                .map(productMapper::toDTO);
+                .map(productMapper::toDto);
     }
 
     @Transactional
+    @Caching(
+        put = @CachePut(value = "product", key = "#result.id"),
+        evict = @CacheEvict(value = "products", allEntries = true)
+    )
     public ProductDTO saveProduct(ProductDTO productDTO) {
         // Création: on ignore l'id fourni côté client
         Product product = productMapper.toEntity(productDTO);
         product.setId(null);
         Product savedProduct = productRepository.save(product);
-        return productMapper.toDTO(savedProduct);
+        return productMapper.toDto(savedProduct);
     }
 
     @Transactional
+    @Caching(
+        put = @CachePut(value = "product", key = "#id"),
+        evict = @CacheEvict(value = "products", allEntries = true)
+    )
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product " + id + " not found"));
@@ -57,22 +71,26 @@ public class ProductService {
         Product incoming = productMapper.toEntity(productDTO);
         incoming.setId(product.getId());
         Product saved = productRepository.save(incoming);
-        return productMapper.toDTO(saved);
+        return productMapper.toDto(saved);
     }
 
     @Transactional
+    @Caching(
+        put = @CachePut(value = "product", key = "#id"),
+        evict = @CacheEvict(value = "products", allEntries = true)
+    )
     public ProductDTO partialUpdateProduct(Long id, ProductDTO productDTO) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product " + id + " not found"));
         productMapper.updateEntityFromDto(productDTO, product);
         Product saved = productRepository.save(product);
-        return productMapper.toDTO(saved);
+        return productMapper.toDto(saved);
     }
 
     @Transactional(readOnly = true)
     public Page<ProductDTO> search(ProductCriteria criteria, Pageable pageable) {
         Specification<Product> spec = buildSpecification(criteria);
-        return productRepository.findAll(spec, pageable).map(productMapper::toDTO);
+        return productRepository.findAll(spec, pageable).map(productMapper::toDto);
     }
 
     private Specification<Product> buildSpecification(ProductCriteria c) {
@@ -110,28 +128,34 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductDTO> findByName(String name) {
         return productRepository.findByNameContainingIgnoreCase(name)
-                .stream().map(productMapper::toDTO).collect(Collectors.toList());
+                .stream().map(productMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<ProductDTO> findByDescription(String description) {
         return productRepository.findByDescriptionContainingIgnoreCase(description)
-                .stream().map(productMapper::toDTO).collect(Collectors.toList());
+                .stream().map(productMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<ProductDTO> findByCategory(String category) {
         return productRepository.findByCategoryIgnoreCase(category)
-                .stream().map(productMapper::toDTO).collect(Collectors.toList());
+                .stream().map(productMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<ProductDTO> findByPriceBetween(Double min, Double max) {
         return productRepository.findByPriceBetween(min, max)
-                .stream().map(productMapper::toDTO).collect(Collectors.toList());
+                .stream().map(productMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional
+    @Caching(
+        evict = {
+            @CacheEvict(value = "product", key = "#id"),
+            @CacheEvict(value = "products", allEntries = true)
+        }
+    )
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }

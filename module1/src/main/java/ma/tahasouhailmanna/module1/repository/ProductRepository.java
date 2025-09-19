@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
-    // Méthodes dérivées optionnelles
+
     List<Product> findByNameContainingIgnoreCase(String name);
     List<Product> findByDescriptionContainingIgnoreCase(String description);
     List<Product> findByCategoryIgnoreCase(String category);

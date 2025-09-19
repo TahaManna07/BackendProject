@@ -33,15 +33,4 @@ public class ProductCriteria {
     public boolean isQuantityRangeValid() {
         return minQuantity == null || maxQuantity == null || minQuantity <= maxQuantity;
     }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
-    public Double getMinPrice() { return minPrice; }
-    public void setMinPrice(Double minPrice) { this.minPrice = minPrice; }
-    public Double getMaxPrice() { return maxPrice; }
-    public void setMaxPrice(Double maxPrice) { this.maxPrice = maxPrice; }
 }
