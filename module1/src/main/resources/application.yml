@@ -3,3 +3,4 @@ spring:
     import: optional:file:.env.properties
   profiles:
     default: dev
+# test
