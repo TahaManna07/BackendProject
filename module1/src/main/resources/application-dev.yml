@@ -32,6 +32,15 @@ spring:
     redis:
       host: localhost
       port: 6379
+  security:
+    user:
+      name: admin
+      password: admin123
+      roles: ADMIN
+    users:
+      - name: user
+        password: user123
+        roles: USER
 
 server:
   port: 8080

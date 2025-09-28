@@ -7,6 +7,7 @@ import ma.tahasouhailmanna.module1.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,49 +22,56 @@ public class ProductController {
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
-
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
     public List<ProductDTO> getAllProducts() {
         return productService.getAllProducts();
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         return productService.getProductById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         ProductDTO savedProduct = productService.saveProduct(productDTO);
         return ResponseEntity.ok(savedProduct);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/search")
     public Page<ProductDTO> search(@Valid ma.tahasouhailmanna.module1.criteria.ProductCriteria criteria, Pageable pageable) {
         return productService.search(criteria, pageable);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/search/name")
     public List<ProductDTO> searchByName(@RequestParam String name) {
         return productService.findByName(name);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/search/description")
     public List<ProductDTO> searchByDescription(@RequestParam String description) {
         return productService.findByDescription(description);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/search/category")
     public List<ProductDTO> searchByCategory(@RequestParam String category) {
         return productService.findByCategory(category);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/search/price")
     public List<ProductDTO> searchByPriceBetween(@RequestParam Double min, @RequestParam Double max) {
         return productService.findByPriceBetween(min, max);

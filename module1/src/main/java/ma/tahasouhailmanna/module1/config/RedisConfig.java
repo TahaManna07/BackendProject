@@ -17,7 +17,7 @@ import java.util.Map;
 
 @EnableCaching
 @Configuration
-public class AppConfig {
+public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
